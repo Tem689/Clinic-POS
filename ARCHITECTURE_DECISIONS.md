@@ -46,17 +46,20 @@ We follow a **Thin Vertical Slice** approach. Instead of complex layers (Clean/O
 - **Policy-based Auth**: 
     - `CanViewPatients`: Admin, User, Viewer.
     - `CanCreatePatients`: Admin, User.
-- **DB Uniqueness**: A composite unique index `(TenantId, PhoneNumber)` prevents accidental cross-tenant duplicates while allowing the same phone number to exist in *different* tenants.
+    - `CanCreateAppointments`: Admin, User.
+- **DB Uniqueness**: 
+    - Patient: Composite index `(TenantId, PhoneNumber)`.
+    - Appointment: Composite index `(PatientId, StartAt, BranchId)` to prevent double booking.
 
 ## Caching & Messaging
 - **Cache Strategy**: Tenant-scoped keys: `tenant:{tid}:patients:list:{branchId}`. Prevents data from one tenant being served to another if a cache key collision were to occur.
-- **RabbitMQ**: Publishes `PatientCreated` events to a `patient-events` exchange. Minimal logic for high-performance scale.
+- **RabbitMQ**: Publishes `PatientCreated` and `AppointmentCreated` events with tenant context for downstream processing.
 
 ## Integration Test Strategy
 We use `WebApplicationFactory` to spin up a real test host.
 1. **Tenant Isolation Test**: Verify that Tenant A cannot see Tenant B's data even if they know the ID.
-2. **Uniqueness Test**: Verify that a duplicate phone number within the *same* tenant returns a `409 Conflict`.
-3. **Invalidation Test**: Verify that creating a patient clears the related Redis cache.
+2. **Uniqueness Test**: Verify that duplicate phones/appointments return `409 Conflict`.
+3. **Invalidation Test**: Verify that creating a patient clears the related cache.
 
 ## Checklist Verification
 - [x] Tenant isolation enforced (Global Query Filters)

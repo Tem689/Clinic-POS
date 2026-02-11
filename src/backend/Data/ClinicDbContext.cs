@@ -18,6 +18,7 @@ public class ClinicDbContext : DbContext
     public DbSet<AppUser> AppUsers { get; set; }
     public DbSet<Patient> Patients { get; set; }
     public DbSet<UserBranch> UserBranches { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -52,6 +53,18 @@ public class ClinicDbContext : DbContext
         // Filter AppUsers (users belong to tenant)
         modelBuilder.Entity<AppUser>().HasQueryFilter(u => _currentTenant.Id == null || u.TenantId == _currentTenant.Id);
 
+        // Filter Appointments
+        modelBuilder.Entity<Appointment>().HasQueryFilter(a => _currentTenant.Id == null || a.TenantId == _currentTenant.Id);
+
+        // Indices
+        modelBuilder.Entity<Patient>()
+            .HasIndex(p => new { p.TenantId, p.PhoneNumber })
+            .IsUnique();
+
+        modelBuilder.Entity<Appointment>()
+            .HasIndex(a => new { a.PatientId, a.StartAt, a.BranchId })
+            .IsUnique();
+
         // Relationships
         modelBuilder.Entity<Branch>()
             .HasOne(b => b.Tenant)
@@ -76,5 +89,17 @@ public class ClinicDbContext : DbContext
             .WithMany()
             .HasForeignKey(p => p.PrimaryBranchId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.Tenant)
+            .WithMany()
+            .HasForeignKey(a => a.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Appointment>()
+            .HasOne(a => a.Patient)
+            .WithMany()
+            .HasForeignKey(a => a.PatientId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

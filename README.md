@@ -1,16 +1,12 @@
-<<<<<<< HEAD
-# Clinic-POS
-Test
-=======
 # Clinic POS v1 - Thin Slice
 
-A multi-tenant, multi-branch Clinic POS system built with .NET 9, Next.js, PostgreSQL, Redis, and RabbitMQ.
+A multi-tenant, multi-branch Clinic POS system built with .NET 10, Next.js, PostgreSQL, Redis, and RabbitMQ.
 
 ## Architecture Overview
 
 - **Backend**: ASP.NET Core Web API (.NET 10).
 - **Frontend**: Next.js App Router (TypeScript).
-- **Architecture**: [Detailed Design Decisions](file: Clinic%20POS/ARCHITECTURE_DECISIONS.md)
+- **Architecture**: [Detailed Design Decisions](./ARCHITECTURE_DECISIONS.md)
 - **Data Isolation**: EF Core Global Query Filters + `TenantId` derived from JWT claims.
 - **Caching**: Redis for Patient List, invalidated on create.
 - **Messaging**: MassTransit with RabbitMQ (Event publishing enabled).
@@ -96,4 +92,4 @@ dotnet test
 ## Trade-offs & Assumptions
 - **.NET Version**: .NET 10.0 (Latest).
 - **Soft Deletes**: Not implemented in v1 to keep complexity minimal.
->>>>>>> 929cdc5 (Initial commit: Clinic POS v1 with .NET 10 upgrade and UI Revamp)
+
