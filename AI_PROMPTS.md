@@ -6,7 +6,7 @@
 ## Iterations & Prompts
 
 ### 1. Infrastructure Scaffolding
-- **Prompt**: "Create a docker-compose.yml with Postgres, Redis, and RabbitMQ. Create a .NET 9 Web API in src/backend and a Next.js app in src/frontend."
+- **Prompt**: "Create a docker-compose.yml with Postgres, Redis, and RabbitMQ. Create a .NET 10 Web API in src/backend and a Next.js app in src/frontend."
 - **Iteration**: Modified `docker-compose.yml` host ports (5433, 6380, etc.) to resolve local machine conflicts.
 
 ### 2. Multi-Tenancy Design
