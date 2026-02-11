@@ -21,6 +21,14 @@ public class UsersController : ControllerBase
         _currentTenant = currentTenant;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetUsers()
+    {
+        // Global Query Filter automatically limits this to the current tenant.
+        var users = await _context.AppUsers.ToListAsync();
+        return Ok(users);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
     {

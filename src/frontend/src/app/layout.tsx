@@ -29,7 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const navItems = [
     { label: 'Patients', href: '/patients', icon: '👤' },
-    // Add more nav items here as the app grows
+    ...(user?.role === 'Admin' ? [{ label: 'Users', href: '/users', icon: '🛠️' }] : []),
   ];
 
   const content = pathname === '/login' ? (
